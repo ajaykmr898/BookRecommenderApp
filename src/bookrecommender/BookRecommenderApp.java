@@ -25,10 +25,11 @@ public class BookRecommenderApp {
     public void start() {
         while (true) {
             System.out.println("Benvenuto nel Book Recommender!");
-            System.out.println("1. Consultare il repository dei libri");
-            System.out.println("2. Registrarsi");
-            System.out.println("3. Login");
-            System.out.println("4. Uscire");
+            System.out.println("1. Cerca un libro per titolo/autore/anno");
+            System.out.println("2. Visualizza informazioni libro");
+            System.out.println("3. Registrarsi");
+            System.out.println("4. Login");
+            System.out.println("5. Uscire");
             System.out.print("Seleziona un'opzione: ");
             int option = Integer.parseInt(scanner.nextLine());
 

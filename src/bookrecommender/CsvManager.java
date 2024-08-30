@@ -19,14 +19,19 @@ public class CsvManager {
         List<Book> books = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                String title = data[0];
-                String author = data[1];
-                int publicationYear = Integer.parseInt(data[2]);
-                String publisher = data.length > 3 ? data[3] : null;
-                List<String> categories = data.length > 4 ? List.of(data[4].split(";")) : null;
-                books.add(new Book(title, author, publicationYear, publisher, categories));
+              while ((line = br.readLine()) != null) {
+                String[] values = line.split("\t"); // Tab-separated values
+                String title = values[0];
+                String authors = values[1];
+                String description = values[2];
+                String category = values[3];
+                String publisher = values[4];
+                double price = Double.parseDouble(values[5]);
+                String publishMonth = values[6];
+                int publishYear = Integer.parseInt(values[7]);
+
+                Book book = new Book(title, authors, description, category, publisher, price, publishMonth, publishYear);
+                books.add(book);
             }
         } catch (IOException e) {
             e.printStackTrace();
