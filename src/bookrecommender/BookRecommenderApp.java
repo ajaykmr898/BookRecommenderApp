@@ -34,15 +34,18 @@ public class BookRecommenderApp {
 
             switch (option) {
                 case 1:
-                    searchBook();
+                    cercaLibro();
                     break;
                 case 2:
-                    register();
+                    visualizzaLibro();
                     break;
                 case 3:
-                    login();
+                    register();
                     break;
                 case 4:
+                    login();
+                    break;
+                case 5:
                     saveData();  // Salva i dati prima di uscire
                     System.out.println("Arrivederci!");
                     return;
@@ -241,46 +244,110 @@ public class BookRecommenderApp {
     /**
      * Implementazione del metodo di ricerca dei libri.
      */
-    private void searchBook() {
-        System.out.println("Cerca un libro:");
-        System.out.println("1. Per titolo");
-        System.out.println("2. Per autore");
-        System.out.println("3. Per autore e anno");
-        System.out.print("Seleziona un'opzione: ");
-        int option = Integer.parseInt(scanner.nextLine());
+    public void cercaLibro() {
+        System.out.println("Seleziona il tipo di ricerca:");
+        System.out.println("1: Ricerca per titolo");
+        System.out.println("2: Ricerca per autore");
+        System.out.println("3: Ricerca per autore e anno");
 
-        switch (option) {
+        int scelta = Integer.parseInt(scanner.nextLine());
+        List<Book> risultati = new ArrayList<>();
+
+        switch (scelta) {
             case 1:
-                System.out.print("Inserisci il titolo da cercare: ");
-                String title = scanner.nextLine();
+                // Ricerca per titolo
+                System.out.print("Inserisci il titolo del libro: ");
+                String titoloRicerca = scanner.nextLine();
                 for (Book book : bookRepository) {
-                    if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
-                        System.out.println(book);
+                    if (book.getTitle().toLowerCase().contains(titoloRicerca.toLowerCase())) {
+                        risultati.add(book);
                     }
                 }
                 break;
+
             case 2:
-                System.out.print("Inserisci l'autore da cercare: ");
-                String author = scanner.nextLine();
+                // Ricerca per autore
+                System.out.print("Inserisci il nome dell'autore: ");
+                String autoreRicerca = scanner.nextLine();
                 for (Book book : bookRepository) {
-                    if (book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
-                        System.out.println(book);
+                    if (book.getAuthors().toLowerCase().contains(autoreRicerca.toLowerCase())) {
+                        risultati.add(book);
                     }
                 }
                 break;
+
             case 3:
-                System.out.print("Inserisci l'autore: ");
-                String authorSearch = scanner.nextLine();
-                System.out.print("Inserisci l'anno: ");
-                int yearSearch = Integer.parseInt(scanner.nextLine());
+                // Ricerca per autore e anno
+                System.out.print("Inserisci il nome dell'autore: ");
+                String autoreAnnoRicerca = scanner.nextLine();
+                System.out.print("Inserisci l'anno di pubblicazione: ");
+                int annoRicerca = Integer.parseInt(scanner.nextLine());
                 for (Book book : bookRepository) {
-                    if (book.getAuthor().toLowerCase().contains(authorSearch.toLowerCase()) && book.getPublicationYear() == yearSearch) {
-                        System.out.println(book);
+                    if (book.getAuthors().toLowerCase().contains(autoreAnnoRicerca.toLowerCase()) 
+                        && book.getPublicationYear() == annoRicerca) {
+                        risultati.add(book);
                     }
                 }
                 break;
+
             default:
                 System.out.println("Opzione non valida.");
+                return;
+        }
+
+        // Stampa i risultati della ricerca
+        if (risultati.isEmpty()) {
+            System.out.println("Nessun libro trovato.");
+        } else {
+            System.out.println("Libri trovati:");
+            for (int i = 0; i < risultati.size(); i++) {
+                System.out.println((i + 1) + ": " + risultati.get(i)); // Assuming Book class has a toString method
+            }
         }
     }
+
+    /** 
+     * Method to view a book's details
+     */
+    public void visualizzaLibro() {
+        System.out.print("Inserisci il numero del libro che desideri visualizzare: ");
+        int index = Integer.parseInt(scanner.nextLine()) - 1; // Convert to zero-based index
+
+        if (index < 0 || index >= bookRepository.size()) {
+            System.out.println("Numero di libro non valido.");
+            return;
+        }
+
+        Book book = bookRepository.get(index); // Get the selected book
+        System.out.println("Dettagli del libro:");
+        System.out.println(book); // Print basic book details
+
+        // Print ratings if available
+        List<Rating> ratings = book.getRatings(); // Assuming getRatings() returns a list of ratings
+        if (ratings.isEmpty()) {
+            System.out.println("Non ci sono valutazioni per questo libro.");
+        } else {
+            System.out.println("Valutazioni:");
+            // Aggregate rating information
+            double totalScore = 0;
+            int count = ratings.size();
+            for (Rating rating : ratings) {
+                totalScore += rating.getOverallScore(); // Assuming Rating class has a method getOverallScore()
+            }
+            double averageScore = totalScore / count;
+            System.out.printf("Media delle valutazioni: %.2f da %d utenti.%n", averageScore, count);
+        }
+
+        // Print recommendations if available
+        List<Book> recommendations = book.getRecommendations(); // Assuming getRecommendations() returns a list of recommended books
+        if (recommendations.isEmpty()) {
+            System.out.println("Non ci sono consigli per questo libro.");
+        } else {
+            System.out.println("Libri consigliati:");
+            for (Book recommendedBook : recommendations) {
+                System.out.println(recommendedBook); // Print recommended book details
+            }
+        }
+    }
+
 }
