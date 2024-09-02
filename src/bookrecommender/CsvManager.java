@@ -40,6 +40,104 @@ public class CsvManager {
     }
 
     /**
+     * Metodo per aggiungere un libro dal file CSV
+     * 
+     * @param filePath Percorso del file CSV.
+     * @param book libro da aggiungere
+     * @return aggiunge libro
+     */
+    public static void appendBookToCsv(String filePath, Book book) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
+            bw.write(String.format("%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%d\n",
+                    book.getTitle(),
+                    book.getAuthors(),
+                    book.getDescription(),
+                    book.getCategory(),
+                    book.getPublisher(),
+                    book.getPrice(),
+                    book.getPublishMonth(),
+                    book.getPublishYear()));
+        } catch (IOException e) {
+            e.printStackTrace(); // Stampa nel catch in caso di errore
+            throw e;
+        }
+    }
+
+
+
+    /**
+     * Metodo per aggiornare un libro dal file CSV
+     * 
+     * @param filePath Percorso del file CSV.
+     * @param book libro da aggiornare
+     * @return aggiorna libro
+     */
+    public static void updateBookInCsv(String filePath, Book book) {
+        List<Book> books = loadBooks(filePath);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            bw.write("Title\tAuthors\tDescription\tCategory\tPublisher\tPrice\tPublish Month\tPublish Year\n"); // Intestazione
+            for (Book b : books) {
+                if (b.getTitle().equals(book.getTitle()) && b.getAuthors().equals(book.getAuthors())) {
+                    // Scrivi il libro modificato
+                    bw.write(String.format("%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%d\n",
+                            book.getTitle(),
+                            book.getAuthors(),
+                            book.getDescription(),
+                            book.getCategory(),
+                            book.getPublisher(),
+                            book.getPrice(),
+                            book.getPublishMonth(),
+                            book.getPublishYear()));
+                } else {
+                    // Scrivi il libro non modificato
+                    bw.write(String.format("%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%d\n",
+                            b.getTitle(),
+                            b.getAuthors(),
+                            b.getDescription(),
+                            b.getCategory(),
+                            b.getPublisher(),
+                            b.getPrice(),
+                            b.getPublishMonth(),
+                            b.getPublishYear()));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Stampa nel catch in caso di errore
+        }
+    }
+
+
+    /**
+     * Metodo per rimuovere un libro dal file CSV
+     * 
+     * @param filePath Percorso del file CSV.
+     * @param book libro da rimuovere
+     * @return rimuove libro
+     */
+    public static void removeBookFromCsv(String filePath, Book book) {
+        List<Book> books = loadBooks(filePath);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            bw.write("Title\tAuthors\tDescription\tCategory\tPublisher\tPrice\tPublish Month\tPublish Year\n"); // Intestazione
+            for (Book b : books) {
+                if (!(b.getTitle().equals(book.getTitle()) && b.getAuthors().equals(book.getAuthors()))) {
+                    // Scrivi solo i libri non eliminati
+                    bw.write(String.format("%s\t%s\t%s\t%s\t%s\t%.2f\t%s\t%d\n",
+                            b.getTitle(),
+                            b.getAuthors(),
+                            b.getDescription(),
+                            b.getCategory(),
+                            b.getPublisher(),
+                            b.getPrice(),
+                            b.getPublishMonth(),
+                            b.getPublishYear()));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Stampa nel catch in caso di errore
+        }
+    }
+
+    /**
      * Metodo per caricare gli utenti registrati da un file CSV.
      * 
      * @param filePath Percorso del file CSV.

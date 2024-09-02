@@ -1,5 +1,6 @@
 package bookrecommender;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -348,6 +349,109 @@ public class BookRecommenderApp {
             for (Book recommendedBook : recommendations) {
                 System.out.println(recommendedBook); // Print recommended book details
             }
+        }
+    }
+
+
+    /**
+     *  Metodo per cercare libri per titolo
+     */ 
+    public List<Book> cercaLibroTitolo(String titolo) {
+        List<Book> risultati = new ArrayList<>();
+        for (Book book : bookRepository) {
+            if (book.getTitle().toLowerCase().contains(titolo.toLowerCase())) {
+                risultati.add(book);
+            }
+        }
+        return risultati;
+    }
+
+    /**
+     *  Metodo per cercare libri per autore
+     */
+    public List<Book> cercaLibroAutore(String autore) {
+        List<Book> risultati = new ArrayList<>();
+        for (Book book : bookRepository) {
+            if (book.getAuthors().toLowerCase().contains(autore.toLowerCase())) {
+                risultati.add(book);
+            }
+        }
+        return risultati;
+    }
+
+    /**
+     *  Metodo per cercare libri per autore e anno
+     */ 
+    public List<Book> cercaLibroAutoreAnno(String autore, String anno) {
+        List<Book> risultati = new ArrayList<>();
+        for (Book book : bookRepository) {
+            if (book.getAuthors().toLowerCase().contains(autore.toLowerCase()) &&
+                String.valueOf(book.getPublishYear()).equals(anno)) {
+                risultati.add(book);
+            }
+        }
+        return risultati;
+    }
+
+
+    /** 
+     * Metodo per inserire un nuovo libro
+     */
+    public boolean inserisciLibro(Book libro) {
+        try {
+            CsvManager.appendBookToCsv("Libri.dati.csv", libro);
+            bookRepository.add(libro);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace(); // Stampa nel catch in caso di errore
+            return false;
+        }
+    }
+
+    /**
+     *  Metodo per modificare un dato specifico di un libro
+    */
+    public Book modificaDato(Book libro, int i, String dato) {
+        switch (i) {
+            case 0:
+                libro.setTitle(dato);
+                break;
+            case 1:
+                libro.setAuthors(dato);
+                break;
+            case 2:
+                libro.setPublishYear(Integer.parseInt(dato));
+                break;
+            case 3:
+                libro.setPublisher(dato);
+                break;
+            default:
+                return null;
+        }
+        CsvManager.updateBookInCsv("Libri.dati.csv", libro);
+        return libro;
+    }
+
+    /**
+    * Metodo per modificare le categorie di un libro
+    */
+    public Book modificaGenere(Book libro, List<String> categorie) {
+        String categorieString = String.join(", ", categorie);
+        libro.setCategory(categorieString);
+        CsvManager.updateBookInCsv("Libri.dati.csv", libro);
+        return libro;
+    }
+
+    /**
+     * Inserisce un nuovo libro nel repository.
+     */
+    public boolean eliminaLibro(Book libro) {
+        boolean removed = bookRepository.remove(libro);
+        if (removed) {
+            CsvManager.removeBookFromCsv("Libri.dati.csv", libro);
+            return true;
+        } else {
+            return false;
         }
     }
 
