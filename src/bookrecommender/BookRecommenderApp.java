@@ -15,7 +15,7 @@ public class BookRecommenderApp {
     private Scanner scanner;
 
     public BookRecommenderApp() {
-        this.bookRepository = CsvManager.loadBooks("BooksDatasetClean.csv");  // Carica i libri dal file CSV
+        this.bookRepository = CsvManager.loadBooks("Libri.dati.csv");  // Carica i libri dal file CSV
         this.users = CsvManager.loadUsers("users.csv");            // Carica gli utenti dal file CSV
         this.scanner = new Scanner(System.in);
     }
@@ -239,7 +239,7 @@ public class BookRecommenderApp {
      * Salva i dati dei libri e degli utenti sui rispettivi file CSV.
      */
     private void saveData() {
-        CsvManager.saveBooks(bookRepository, "books.csv");
+        CsvManager.saveBooks(bookRepository, "Libri.dati.csv");
         CsvManager.saveUsers(users, "users.csv");
     }
 
